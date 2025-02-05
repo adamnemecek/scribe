@@ -10,6 +10,7 @@ func err(_ msg: String) -> Never {
 
 
 // Function to perform text recognition
+// convert to async 
 func extractText(from image: CGImage, completion: @escaping ([String]) -> Void) {
     let textRequest = VNRecognizeTextRequest { request, error in
         guard error == nil,
