@@ -10,14 +10,12 @@ func err(_ msg: String) -> Never {
 
 
 // Function to perform text recognition
-// convert to async 
+// convert to async
 func extractText(from image: CGImage, completion: @escaping ([String]) -> Void) {
     let textRequest = VNRecognizeTextRequest { request, error in
         guard error == nil,
               let observations = request.results as? [VNRecognizedTextObservation] else {
-            print("Error performing text recognition: \(error?.localizedDescription ?? "Unknown error")")
-            completion([])
-            return
+            err("Error performing text recognition: \(error?.localizedDescription ?? "Unknown error")")
         }
         
         let recognizedText = observations.compactMap { observation in
@@ -37,21 +35,18 @@ func extractText(from image: CGImage, completion: @escaping ([String]) -> Void) 
     do {
         try requestHandler.perform([textRequest])
     } catch {
-        print("Error creating request handler: \(error.localizedDescription)")
-        completion([])
+        err(error.localizedDescription)
     }
 }
 
 func main() {
     
     // Command line argument handling
-    guard CommandLine.arguments.count > 1 else {
-        print("Usage: textextract <image_path>")
-        exit(1)
+    guard CommandLine.arguments.count == 1 else {
+        err("Usage: textextract <image_path>")
     }
 
     let imagePath = CommandLine.arguments[1]
-//    let imagePath = "/Users/adamnemecek/helios/adjoint.images/adjoint.images/2024.2/grab8518.png"
 
     // Load and process the image
     guard let image = NSImage(contentsOfFile: imagePath),
